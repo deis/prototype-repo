@@ -14,4 +14,15 @@ build:
 docker-compile:
 	go build -o ${BINDIR}/bin/boot -a -installsuffix cgo -ldflags ${LDFLAGS} boot.go
 
-.PHONY: all build docker-compile
+deploy: kube-service kube-rc
+
+kube-service:
+	kubectl create -f def/foo-service.json
+
+kube-rc:
+	kubectl create -f def/foo-rc.json
+
+kube-clean:
+	kubectl delete rc foo
+
+.PHONY: all build docker-compile kube-up kube-down deploy
