@@ -11,6 +11,17 @@ A Deis component is...
 
 Typically, Deis components are written in Go.
 
+## Practical Usage
+
+If you want to experiment with creating a new repo using this framework,
+try something like this:
+
+```
+$ mkdir my_project
+$ cd my_project
+$ curl -fsSL https://github.com/technosophos/prototype-repo/archive/master.tar.gz | tar -zxv --strip-components 1
+```
+
 ## First-Class Kubernetes
 
 Every component must define the appropriate Kubernetes files.
