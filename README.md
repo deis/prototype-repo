@@ -34,7 +34,7 @@ identifying components as part of Deis.
 *Secrets* should be used for storing small bits of shared information,
 and their contents may be set at startup time.
 
-All Kubernetes definitions should be placed in the `def/` directory.
+All Kubernetes definitions should be placed in the `manifests/` directory.
 
 The _Makefile_ should have targets that use `kubectl` to load
 definitions into Kubernetes.
