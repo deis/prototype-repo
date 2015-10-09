@@ -41,8 +41,10 @@ docker-compile:
 	go build -o ${BINDIR}/bin/boot -a -installsuffix cgo -ldflags ${LDFLAGS} boot.go
 
 # For cases where we're building from local
+# We also alter the RC file to set the image name.
 docker-build:
 	docker build --rm -t ${IMAGE} rootfs
+	perl -pi -e "s|[a-z0-9.:]+\/deis\/${SHORT_NAME}:[0-9a-z-.]+|${IMAGE}|g" ${RC}
 
 # Push to a registry that Kubernetes can access.
 docker-push:
@@ -57,9 +59,7 @@ kube-service:
 	kubectl create -f ${SVC}
 
 # When possible, we deploy with RCs.
-# This example attempts to dynamically rename the image.
 kube-rc:
-	perl -pi -e "s|[a-z0-9.:]+\/deis\/${SHORT_NAME}:[0-9a-z-.]+|${IMAGE}|g" ${RC}
 	kubectl create -f ${RC}
 
 kube-clean:
