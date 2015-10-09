@@ -17,10 +17,10 @@ docker-compile:
 deploy: kube-service kube-rc
 
 kube-service:
-	kubectl create -f def/foo-service.json
+	kubectl create -f manifests/foo-service.json
 
 kube-rc:
-	kubectl create -f def/foo-rc.json
+	kubectl create -f manifests/foo-rc.json
 
 kube-clean:
 	kubectl delete rc foo
