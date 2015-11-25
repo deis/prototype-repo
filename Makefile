@@ -1,3 +1,5 @@
+include includes.mk
+
 # Short name: Short name, following [a-zA-Z_], used all over the place.
 # Some uses for short name:
 # - Docker image name
@@ -18,7 +20,6 @@ LDFLAGS := "-s -X main.version=${VERSION}"
 BINDIR := ./rootfs
 
 # Legacy support for DEV_REGISTRY, plus new support for DEIS_REGISTRY.
-DEV_REGISTRY ?= $(eval docker-machine ip deis):5000
 DEIS_REGISTRY ?= ${DEV_REGISTRY}
 
 # Kubernetes-specific information for RC, Service, and Image.
@@ -47,7 +48,7 @@ docker-build:
 	perl -pi -e "s|[a-z0-9.:]+\/deis\/${SHORT_NAME}:[0-9a-z-.]+|${IMAGE}|g" ${RC}
 
 # Push to a registry that Kubernetes can access.
-docker-push:
+docker-push: check-registry
 	docker push ${IMAGE}
 
 # Deploy is a Kubernetes-oriented target
