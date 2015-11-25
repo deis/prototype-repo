@@ -33,7 +33,7 @@ all:
 # This illustrates a two-stage Docker build. docker-compile runs inside of
 # the Docker environment. Other alternatives are cross-compiling, doing
 # the build as a `docker build`.
-build:
+build: check-docker
 	mkdir -p ${BINDIR}/bin
 	docker run --rm -v ${PWD}:/app -w /app golang:1.5.1 make docker-compile
 
@@ -43,12 +43,12 @@ docker-compile:
 
 # For cases where we're building from local
 # We also alter the RC file to set the image name.
-docker-build:
+docker-build: check-docker
 	docker build --rm -t ${IMAGE} rootfs
 	perl -pi -e "s|[a-z0-9.:]+\/deis\/${SHORT_NAME}:[0-9a-z-.]+|${IMAGE}|g" ${RC}
 
 # Push to a registry that Kubernetes can access.
-docker-push: check-registry
+docker-push: check-docker check-registry
 	docker push ${IMAGE}
 
 # Deploy is a Kubernetes-oriented target
@@ -56,14 +56,14 @@ deploy: kube-service kube-rc
 
 # Some things, like services, have to be deployed before pods. This is an
 # example target. Others could perhaps include kube-secret, kube-volume, etc.
-kube-service:
+kube-service: check-kubectl
 	kubectl create -f ${SVC}
 
 # When possible, we deploy with RCs.
-kube-rc:
+kube-rc: check-kubectl
 	kubectl create -f ${RC}
 
-kube-clean:
+kube-clean: check-kubectl
 	kubectl delete rc deis-example
 
 .PHONY: all build docker-compile kube-up kube-down deploy
