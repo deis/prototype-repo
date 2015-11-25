@@ -17,7 +17,7 @@ VERSION := 0.0.1-$(shell date "+%Y%m%d%H%M%S")
 LDFLAGS := "-s -X main.version=${VERSION}"
 
 # Docker Root FS
-BINDIR := ./rootfs
+BINDIR := ./rootfs/bin
 
 # Legacy support for DEV_REGISTRY, plus new support for DEIS_REGISTRY.
 DEIS_REGISTRY ?= ${DEV_REGISTRY}
@@ -34,12 +34,12 @@ all:
 # the Docker environment. Other alternatives are cross-compiling, doing
 # the build as a `docker build`.
 build: check-docker
-	mkdir -p ${BINDIR}/bin
+	mkdir -p ${BINDIR}
 	docker run --rm -v ${PWD}:/app -w /app golang:1.5.1 make docker-compile
 
 # For cases where build is run inside of a container.
 docker-compile:
-	go build -o ${BINDIR}/bin/boot -a -installsuffix cgo -ldflags ${LDFLAGS} boot.go
+	go build -o ${BINDIR}/boot -a -installsuffix cgo -ldflags ${LDFLAGS} boot.go
 
 # For cases where we're building from local
 # We also alter the RC file to set the image name.
