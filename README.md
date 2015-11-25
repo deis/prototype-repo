@@ -19,7 +19,7 @@ try something like this:
 ```
 $ mkdir my_project
 $ cd my_project
-$ curl -fsSL https://github.com/technosophos/prototype-repo/archive/master.tar.gz | tar -zxv --strip-components 1
+$ curl -fsSL https://github.com/deis/prototype-repo/archive/master.tar.gz | tar -zxv --strip-components 1
 ```
 
 ## First-Class Kubernetes
