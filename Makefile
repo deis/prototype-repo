@@ -13,6 +13,10 @@ export GO15VENDOREXPERIMENT=1
 # doesn't allow +, so we use -.
 VERSION := git-$(shell git rev-parse --short HEAD)
 
+DEV_ENV_IMAGE := quay.io/deis/go-dev:0.2.0
+DEV_ENV_WORK_DIR := /go/src/github.com/deis/${SHORT_NAME}
+DEV_ENV_CMD := docker run --rm -v ${PWD}:${DEV_ENV_WORK_DIR} -w ${DEV_ENV_WORK_DIR} ${DEV_ENV_IMAGE}
+
 # Common flags passed into Go's linker.
 LDFLAGS := "-s -X main.version=${VERSION}"
 
@@ -32,16 +36,20 @@ IMAGE := ${DEIS_REGISTRY}/${IMAGE_PREFIX}${SHORT_NAME}:${VERSION}
 all:
 	@echo "Use a Makefile to control top-level building of the project."
 
+# Containerized dependency resolution / initial workspace setup
+bootstrap: check-docker
+	${DEV_ENV_CMD} glide up
+
 # This illustrates a two-stage Docker build. docker-compile runs inside of
 # the Docker environment. Other alternatives are cross-compiling, doing
 # the build as a `docker build`.
 build: check-docker
 	mkdir -p ${BINDIR}
-	docker run --rm -v ${PWD}:/app -w /app golang:1.5.1 make docker-compile
+	${DEV_ENV_CMD} make docker-compile
 
 # For cases where build is run inside of a container.
 docker-compile:
-	go build -o ${BINDIR}/boot -a -installsuffix cgo -ldflags ${LDFLAGS} boot.go
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ${BINDIR}/boot -a -installsuffix cgo -ldflags ${LDFLAGS} boot.go
 
 # For cases where we're building from local
 # We also alter the RC file to set the image name.
