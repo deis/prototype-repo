@@ -1,10 +1,5 @@
-FROM golang:1.5
-
+FROM alpine:3.3
+# This Dockerfile assumes that a boot binary has already been built. Run 'make build' before building an image from this file
 ENV VERSION 0.0.1
-ENV GO15VENDOREXPERIMENT 1
-ENV CGO_ENABLED 0
-ENV LDFLAGS "-s -X main.version=$VERSION"
-ENV BINDIR rootfs/bin
-
-WORKDIR /app
-RUN go build -o $BINDIR/boot -a -installsuffix cgo -ldflags "$LDFLAGS"  boot.go
+ADD rootfs/bin/boot /bin/boot
+CMD ["/bin/boot"]
