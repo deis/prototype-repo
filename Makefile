@@ -45,11 +45,7 @@ bootstrap: check-docker
 # the build as a `docker build`.
 build: check-docker
 	mkdir -p ${BINDIR}
-	${DEV_ENV_CMD} make docker-compile
-
-# For cases where build is run inside of a container.
-docker-compile:
-	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ${BINDIR}/boot -a -installsuffix cgo -ldflags ${LDFLAGS} boot.go
+	${DEV_ENV_CMD} go build -o ${BINDIR}/boot -a -installsuffix cgo -ldflags ${LDFLAGS} boot.go
 
 # For cases where we're building from local
 # We also alter the RC file to set the image name.
