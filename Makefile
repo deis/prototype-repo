@@ -13,7 +13,7 @@ export GO15VENDOREXPERIMENT=1
 # doesn't allow +, so we use -.
 VERSION := git-$(shell git rev-parse --short HEAD)
 
-DEV_ENV_IMAGE := quay.io/deis/go-dev:0.2.0
+DEV_ENV_IMAGE := quay.io/deis/go-dev:0.4.0
 DEV_ENV_WORK_DIR := /go/src/github.com/deis/${SHORT_NAME}
 DEV_ENV_CMD := docker run --rm -v ${PWD}:${DEV_ENV_WORK_DIR} -w ${DEV_ENV_WORK_DIR} ${DEV_ENV_IMAGE}
 
