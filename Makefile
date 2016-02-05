@@ -15,7 +15,7 @@ VERSION := git-$(shell git rev-parse --short HEAD)
 
 DEV_ENV_IMAGE := quay.io/deis/go-dev:0.4.0
 DEV_ENV_WORK_DIR := /go/src/github.com/deis/${SHORT_NAME}
-DEV_ENV_CMD := docker run --rm -v ${PWD}:${DEV_ENV_WORK_DIR} -w ${DEV_ENV_WORK_DIR} ${DEV_ENV_IMAGE}
+DEV_ENV_CMD := docker run --rm -e CGO_ENABLED=0 -v ${PWD}:${DEV_ENV_WORK_DIR} -w ${DEV_ENV_WORK_DIR} ${DEV_ENV_IMAGE}
 
 # Common flags passed into Go's linker.
 LDFLAGS := "-s -X main.version=${VERSION}"
@@ -45,11 +45,7 @@ bootstrap: check-docker
 # the build as a `docker build`.
 build: check-docker
 	mkdir -p ${BINDIR}
-	${DEV_ENV_CMD} make docker-compile
-
-# For cases where build is run inside of a container.
-docker-compile:
-	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ${BINDIR}/boot -a -installsuffix cgo -ldflags ${LDFLAGS} boot.go
+	${DEV_ENV_CMD} go build -o ${BINDIR}/boot -a -installsuffix cgo -ldflags ${LDFLAGS} boot.go
 
 # For cases where we're building from local
 # We also alter the RC file to set the image name.
