@@ -7,7 +7,6 @@ A Deis component is...
 
 - An isolated piece of functionality (e.g. a microservice)
 - That can be packaged into a container (via `docker build`)
-- And can be run inside of Kubernetes
 
 Typically, Deis components are written in Go.
 
@@ -22,24 +21,7 @@ $ cd my_project
 $ curl -fsSL https://github.com/deis/prototype-repo/archive/master.tar.gz | tar -zxv --strip-components 1
 ```
 
-## First-Class Kubernetes
-
-Every component must define the appropriate Kubernetes files.
-Preferably, components should use *Replication Controllers* over pods,
-and use *Services* for autodiscovery.
-
-*Labels* should be used for versioning components and also for
-identifying components as part of Deis.
-
-*Secrets* should be used for storing small bits of shared information,
-and their contents may be set at startup time.
-
-All Kubernetes definitions should be placed in the `manifests/` directory.
-
-The _Makefile_ should have targets that use `kubectl` to load
-definitions into Kubernetes.
-
-## Dockerfiles are for Running
+## Common Conventions
 
 Source code should be built either outside of Docker or in a special
 Docker build phase.
